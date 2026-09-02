@@ -1,7 +1,7 @@
 (() => {
   const THREE = window.THREE;
 
-  if (!THREE || !THREE.OrbitControls) {
+  if (!THREE || !THREE.TrackballControls) {
     document.querySelectorAll(".inline-model-viewer .viewer-status").forEach((status) => {
       status.textContent = "The 3D tools could not load. Refresh this page and try again.";
     });
@@ -124,10 +124,11 @@ function initializeViewer(stage) {
   renderer.outputEncoding = THREE.sRGBEncoding;
   stage.prepend(renderer.domElement);
 
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-  controls.screenSpacePanning = true;
+  const controls = new THREE.TrackballControls(camera, renderer.domElement);
+  controls.rotateSpeed = 3.4;
+  controls.zoomSpeed = 1.15;
+  controls.panSpeed = 0.7;
+  controls.dynamicDampingFactor = 0.12;
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0x22372f, 1.75));
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
@@ -169,7 +170,9 @@ function initializeViewer(stage) {
   sectionSlider.setAttribute("aria-label", "Section view depth");
   sectionControls.append(sectionToggle, sectionLabel, sectionSlider);
   partsPanel.append(partsList, sectionControls);
-  stage.append(partsPanel);
+  const viewerFigure = stage.closest(".featured-render");
+  viewerFigure?.classList.add("has-inline-viewer");
+  stage.after(partsPanel);
 
   function resizeViewer() {
     const { width, height } = stage.getBoundingClientRect();
@@ -177,6 +180,7 @@ function initializeViewer(stage) {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
+    controls.handleResize();
   }
 
   function frameModel() {
