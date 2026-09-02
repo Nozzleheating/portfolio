@@ -687,6 +687,223 @@ h3 {
   line-height: 1;
 }
 
+.step-viewer-section {
+  padding: clamp(52px, 8vw, 96px) clamp(20px, 5vw, 72px);
+}
+
+.step-viewer-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.58fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: end;
+  margin-bottom: 36px;
+}
+
+.step-viewer-heading p:last-child {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.step-viewer-layout {
+  display: grid;
+  grid-template-columns: minmax(232px, 0.32fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.viewer-controls,
+.viewer-stage {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 14px 28px rgba(23, 33, 29, 0.08);
+}
+
+.viewer-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.file-dropzone {
+  display: grid;
+  min-height: 184px;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 18px;
+  border: 1px dashed rgba(36, 107, 82, 0.56);
+  border-radius: 8px;
+  background: rgba(36, 107, 82, 0.07);
+  color: var(--green-dark);
+  cursor: pointer;
+  text-align: center;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.file-dropzone:hover,
+.file-dropzone.is-dragging {
+  border-color: var(--green-dark);
+  background: rgba(36, 107, 82, 0.14);
+}
+
+.file-dropzone span:last-child {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.file-dropzone-mark {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--green-dark);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+#step-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.viewer-stats {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.viewer-stats div {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  background: #eef3ee;
+}
+
+.viewer-stats dt {
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.viewer-stats dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.viewer-reset {
+  width: 100%;
+  cursor: pointer;
+  font: inherit;
+}
+
+.viewer-reset:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.viewer-help,
+.viewer-credit {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.viewer-stage {
+  position: relative;
+  min-height: min(68vw, 680px);
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(36, 107, 82, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(36, 107, 82, 0.05) 1px, transparent 1px),
+    #f1f4ef;
+  background-size: 36px 36px;
+}
+
+.viewer-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.viewer-stage canvas:active {
+  cursor: grabbing;
+}
+
+.viewer-empty {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.viewer-empty p {
+  max-width: 300px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.viewer-cube {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+  border: 8px solid var(--green);
+  border-radius: 8px;
+  box-shadow: 14px 14px 0 rgba(217, 144, 47, 0.6);
+  transform: rotate(30deg) skew(-10deg, -10deg);
+}
+
+.viewer-status {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  max-width: calc(100% - 28px);
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid rgba(217, 222, 214, 0.95);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.viewer-stage.is-loading .viewer-status {
+  color: var(--green-dark);
+}
+
+.viewer-credit {
+  margin-top: 16px;
+}
+
+.viewer-credit a {
+  color: var(--green-dark);
+  font-weight: 800;
+}
+
 .iteration-grid img {
   aspect-ratio: 16 / 10;
   background: #eef0ec;
@@ -895,6 +1112,15 @@ footer {
   .section-heading {
     display: block;
   }
+
+  .step-viewer-heading,
+  .step-viewer-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .viewer-stage {
+    min-height: min(82vw, 560px);
+  }
 }
 
 @media (max-width: 520px) {
@@ -970,5 +1196,14 @@ footer {
   .contact-section {
     margin-left: 16px;
     margin-right: 16px;
+  }
+
+  .step-viewer-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .viewer-stage {
+    min-height: 360px;
   }
 }

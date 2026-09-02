@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D STEP Viewer | Sahil Rajput</title>
+    <meta
+      name="description"
+      content="Open and inspect STEP CAD models directly in Sahil Rajput's engineering portfolio."
+    />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Go to home">SR</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html#projects">Projects</a>
+        <a href="step-viewer.html" aria-current="page">3D Viewer</a>
+        <a href="index.html#skills">Skills</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+      <a class="nav-action" href="index.html">Back</a>
+    </header>
+
+    <main>
+      <section class="step-viewer-section">
+        <div class="step-viewer-heading">
+          <div>
+            <p class="section-kicker">CAD Tool</p>
+            <h1 class="detail-title">3D STEP Viewer</h1>
+          </div>
+          <p>
+            Open a STEP file and inspect its geometry directly in the browser. Your CAD file stays on your device.
+          </p>
+        </div>
+
+        <div class="step-viewer-layout">
+          <aside class="viewer-controls" aria-label="STEP viewer controls">
+            <label class="file-dropzone" id="dropzone" for="step-file">
+              <span class="file-dropzone-mark" aria-hidden="true">+</span>
+              <strong>Choose a STEP file</strong>
+              <span>.step or .stp</span>
+            </label>
+            <input id="step-file" type="file" accept=".step,.stp" />
+
+            <dl class="viewer-stats" aria-live="polite">
+              <div>
+                <dt>File</dt>
+                <dd id="file-name">No file selected</dd>
+              </div>
+              <div>
+                <dt>Solids</dt>
+                <dd id="solid-count">-</dd>
+              </div>
+              <div>
+                <dt>Triangles</dt>
+                <dd id="triangle-count">-</dd>
+              </div>
+            </dl>
+
+            <button class="button secondary viewer-reset" id="reset-view" type="button" disabled>
+              Reset View
+            </button>
+            <p class="viewer-help">Drag to orbit. Scroll or pinch to zoom. Right-drag to pan.</p>
+          </aside>
+
+          <section class="viewer-stage" id="viewer-stage" aria-label="Interactive 3D STEP model viewer">
+            <div class="viewer-empty" id="viewer-empty">
+              <span class="viewer-cube" aria-hidden="true"></span>
+              <strong>Your model will appear here.</strong>
+              <p>Choose a `.step` or `.stp` CAD file to begin.</p>
+            </div>
+            <p class="viewer-status" id="viewer-status" role="status">Ready for a STEP file.</p>
+          </section>
+        </div>
+
+        <p class="viewer-credit">
+          STEP parsing adapted from <a href="https://github.com/yuvanshankar30/STEP-Parser">STEP-Parser</a>, licensed MIT.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2026 Sahil Rajput</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js"></script>
+    <script type="module" src="step-viewer.js"></script>
+  </body>
+</html>
