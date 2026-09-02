@@ -20,6 +20,29 @@ const modelLibrary = {
 
 let parserPromise;
 
+function decodeEmbeddedModel(encodedModel) {
+  const binary = window.atob(encodedModel);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return bytes;
+}
+
+function loadEmbeddedModel(modelKey, sourceFile) {
+  if (window.stepModelSources?.[modelKey]) return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = sourceFile;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error("The CAD model file could not be opened."));
+    document.head.append(script);
+  });
+}
+
 function getParser() {
   if (parserPromise) return parserPromise;
 
@@ -49,6 +72,7 @@ function getParser() {
 
 function initializeViewer(stage) {
   const modelFile = modelLibrary[stage.dataset.stepModel];
+  const embeddedSource = stage.dataset.stepFallback;
   const emptyState = stage.querySelector(".viewer-empty");
   const status = stage.querySelector(".viewer-status");
   const resetButton = stage.querySelector(".inline-viewer-reset");
@@ -118,9 +142,22 @@ function initializeViewer(stage) {
       status.textContent = "Loading CAD engine...";
       const parser = await getParser();
       status.textContent = "Reading model geometry...";
-      const response = await fetch(modelFile);
-      if (!response.ok) throw new Error("The CAD model could not be loaded.");
-      const result = parser.ReadStepFile(new Uint8Array(await response.arrayBuffer()), null);
+      let modelBytes;
+
+      try {
+        const response = await fetch(modelFile);
+        if (!response.ok) throw new Error("The CAD model could not be loaded.");
+        modelBytes = new Uint8Array(await response.arrayBuffer());
+      } catch (fetchError) {
+        if (!embeddedSource) throw fetchError;
+        status.textContent = "Opening local model file...";
+        await loadEmbeddedModel(stage.dataset.stepModel, embeddedSource);
+        const embeddedModel = window.stepModelSources?.[stage.dataset.stepModel];
+        if (!embeddedModel) throw new Error("The local CAD model could not be read.");
+        modelBytes = decodeEmbeddedModel(embeddedModel);
+      }
+
+      const result = parser.ReadStepFile(modelBytes, null);
       if (!result?.success || !result.meshes?.length) throw new Error("No solid geometry was found in this model.");
 
       result.meshes.forEach((mesh) => {
