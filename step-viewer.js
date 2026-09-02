@@ -1,5 +1,7 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+window.stepViewerStarted = true;
 
 const modelLibrary = {
   "light-cover-mounting-bracket": "assets/models/light-cover-mounting-bracket.step",

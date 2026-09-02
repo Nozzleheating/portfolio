@@ -16,6 +16,9 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.wasm" as="fetch" crossorigin="anonymous" />
   </head>
   <body>
     <header class="site-header">
@@ -110,7 +113,11 @@
       <p>© 2026 Sahil Rajput</p>
     </footer>
     <script src="lightbox.js"></script>
+    <script type="importmap">
+      { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/" } }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js"></script>
+    <script src="step-viewer-fallback.js"></script>
     <script type="module" src="step-viewer.js"></script>
   </body>
 </html>
