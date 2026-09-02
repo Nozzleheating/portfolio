@@ -51,6 +51,9 @@ a {
 
 .brand {
   display: inline-grid;
+  position: relative;
+  z-index: 1;
+  flex: 0 0 42px;
   width: 42px;
   height: 42px;
   place-items: center;
@@ -59,6 +62,7 @@ a {
   background: var(--green-dark);
   font-weight: 800;
   text-decoration: none;
+  touch-action: manipulation;
 }
 
 .nav-links {
