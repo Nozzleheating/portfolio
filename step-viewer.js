@@ -16,6 +16,18 @@ const modelLibrary = {
   "countertop-scraper": "assets/models/countertop-scraper.step",
   "shopvac-suction-cup": "assets/models/shopvac-suction-cup.step",
   impeller: "assets/models/impeller.step",
+  "linear-intake": "assets/models/linear-intake.step",
+  "roller-floor": "assets/models/roller-floor.step",
+  "turret-platform-pocketing": "assets/models/turret-platform-pocketing.step",
+  "ground-intake": "assets/models/ground-intake.step",
+  "differential-wrist": "assets/models/differential-wrist.step",
+  "limelight-cover": "assets/models/limelight-cover.step",
+  "funnel-angle-mounts": "assets/models/funnel-angle-mounts.step",
+  "manual-transmission-gearbox": "assets/models/manual-transmission-gearbox.step",
+  carburetor: "assets/models/carburetor.step",
+  turbine: "assets/models/turbine.step",
+  "cam-project": "assets/models/cam-project.step",
+  "cabinet-magnet-holder": "assets/models/cabinet-magnet-holder.step",
 };
 
 let parserPromise;
@@ -41,6 +53,27 @@ function loadEmbeddedModel(modelKey, sourceFile) {
     script.onerror = () => reject(new Error("The CAD model file could not be opened."));
     document.head.append(script);
   });
+}
+
+async function loadModelBytes(modelFile, modelKey, embeddedSource) {
+  const sources = [modelFile, `https://raw.githubusercontent.com/Nozzleheating/portfolio/main/${modelFile}`];
+  let fetchError;
+
+  for (const source of sources) {
+    try {
+      const response = await fetch(source);
+      if (!response.ok) throw new Error("The CAD model could not be loaded.");
+      return new Uint8Array(await response.arrayBuffer());
+    } catch (error) {
+      fetchError = error;
+    }
+  }
+
+  if (!embeddedSource) throw fetchError;
+  await loadEmbeddedModel(modelKey, embeddedSource);
+  const embeddedModel = window.stepModelSources?.[modelKey];
+  if (!embeddedModel) throw new Error("The local CAD model could not be read.");
+  return decodeEmbeddedModel(embeddedModel);
 }
 
 function getParser() {
@@ -110,12 +143,32 @@ function initializeViewer(stage) {
   const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x112d24, transparent: true, opacity: 0.42 });
   const partsPanel = document.createElement("aside");
   const partsList = document.createElement("div");
+  const sectionControls = document.createElement("div");
+  const sectionToggle = document.createElement("input");
+  const sectionLabel = document.createElement("label");
+  const sectionSlider = document.createElement("input");
+  const sectionPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), 0);
+  let sectionBoundsReady = false;
+  let sectionCenter = 0;
 
   partsPanel.className = "viewer-parts-panel";
   partsPanel.hidden = true;
   partsPanel.innerHTML = "<p class=\"viewer-parts-title\">Parts</p>";
   partsList.className = "viewer-parts-list";
-  partsPanel.append(partsList);
+  sectionControls.className = "viewer-section-controls";
+  sectionToggle.type = "checkbox";
+  sectionToggle.id = `section-toggle-${stage.dataset.stepModel}`;
+  sectionLabel.htmlFor = sectionToggle.id;
+  sectionLabel.textContent = "Section View";
+  sectionSlider.type = "range";
+  sectionSlider.min = "-1";
+  sectionSlider.max = "1";
+  sectionSlider.value = "0";
+  sectionSlider.step = "0.01";
+  sectionSlider.disabled = true;
+  sectionSlider.setAttribute("aria-label", "Section view depth");
+  sectionControls.append(sectionToggle, sectionLabel, sectionSlider);
+  partsPanel.append(partsList, sectionControls);
   stage.append(partsPanel);
 
   function resizeViewer() {
@@ -138,6 +191,17 @@ function initializeViewer(stage) {
     camera.updateProjectionMatrix();
     controls.target.copy(sphere.center);
     controls.update();
+
+    if (!sectionBoundsReady) {
+      const sectionRange = radius * 1.15;
+      sectionSlider.min = String(-sectionRange);
+      sectionSlider.max = String(sectionRange);
+      sectionSlider.step = String(Math.max(sectionRange / 200, 0.001));
+      sectionSlider.value = "0";
+      sectionCenter = sphere.center.x;
+      sectionPlane.constant = -sectionCenter;
+      sectionBoundsReady = true;
+    }
   }
 
   function render() {
@@ -151,20 +215,7 @@ function initializeViewer(stage) {
       status.textContent = "Loading CAD engine...";
       const parser = await getParser();
       status.textContent = "Reading model geometry...";
-      let modelBytes;
-
-      try {
-        const response = await fetch(modelFile);
-        if (!response.ok) throw new Error("The CAD model could not be loaded.");
-        modelBytes = new Uint8Array(await response.arrayBuffer());
-      } catch (fetchError) {
-        if (!embeddedSource) throw fetchError;
-        status.textContent = "Opening local model file...";
-        await loadEmbeddedModel(stage.dataset.stepModel, embeddedSource);
-        const embeddedModel = window.stepModelSources?.[stage.dataset.stepModel];
-        if (!embeddedModel) throw new Error("The local CAD model could not be read.");
-        modelBytes = decodeEmbeddedModel(embeddedModel);
-      }
+      const modelBytes = await loadModelBytes(modelFile, stage.dataset.stepModel, embeddedSource);
 
       const result = parser.ReadStepFile(modelBytes, null);
       if (!result?.success || !result.meshes?.length) throw new Error("No solid geometry was found in this model.");
@@ -217,6 +268,18 @@ function initializeViewer(stage) {
   }
 
   resetButton.addEventListener("click", frameModel);
+  sectionToggle.addEventListener("change", () => {
+    const clippingPlanes = sectionToggle.checked ? [sectionPlane] : [];
+    material.clippingPlanes = clippingPlanes;
+    edgeMaterial.clippingPlanes = clippingPlanes;
+    material.needsUpdate = true;
+    edgeMaterial.needsUpdate = true;
+    sectionSlider.disabled = !sectionToggle.checked;
+  });
+  sectionSlider.addEventListener("input", () => {
+    sectionPlane.constant = -sectionCenter + Number(sectionSlider.value);
+  });
+  renderer.localClippingEnabled = true;
   if ("ResizeObserver" in window) {
     new ResizeObserver(resizeViewer).observe(stage);
   } else {
