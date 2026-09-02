@@ -28,6 +28,9 @@ const modelLibrary = {
   turbine: "assets/models/turbine.step",
   "cam-project": "assets/models/cam-project.step",
   "cabinet-magnet-holder": "assets/models/cabinet-magnet-holder.step",
+  "frc-drivebase": "assets/models/frc-drivebase.step",
+  "puzzle-cube": "assets/models/puzzle-cube.step",
+  "bed-mount": "assets/models/bed-mount.step",
 };
 
 let parserPromise;

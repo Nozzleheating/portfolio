@@ -51,8 +51,12 @@
           </div>
 
           <figure class="featured-render">
-            <img src="assets/bed-mount-v13-model-c.jpeg" alt="V13 Bed Mount removable wall mounting clamp" />
-            <figcaption>V13 model of the removable bed mounting clamp.</figcaption>
+            <div class="inline-model-viewer" data-step-model="bed-mount" aria-label="Interactive 3D model of the removable bed mount">
+              <div class="viewer-empty"><span class="viewer-cube" aria-hidden="true"></span><strong>Loading 3D model...</strong><p>Preparing interactive CAD geometry.</p></div>
+              <button class="inline-viewer-reset" type="button" disabled>Reset View</button>
+              <p class="viewer-status" role="status">Preparing model...</p>
+            </div>
+            <figcaption>Interactive CAD model of the removable bed mounting clamp.</figcaption>
           </figure>
         </div>
 
@@ -109,5 +113,10 @@
       <p>© 2026 Sahil Rajput</p>
     </footer>
     <script src="lightbox.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TrackballControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js"></script>
+    <script src="step-viewer-fallback.js"></script>
+    <script src="step-viewer.js"></script>
   </body>
 </html>
