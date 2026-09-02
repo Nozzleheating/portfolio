@@ -49,11 +49,12 @@
           </div>
 
           <figure class="featured-render">
-            <img src="assets/impeller-main.png" alt="CAD rendering of the suction impeller prototype" />
-            <figcaption>
-              CAD model for the suction impeller prototype.
-              <a class="details-link viewer-project-action" href="step-viewer.html?model=impeller">View Interactive 3D Model</a>
-            </figcaption>
+            <div class="inline-model-viewer" data-step-model="impeller" aria-label="Interactive 3D model of the suction impeller">
+              <div class="viewer-empty"><span class="viewer-cube" aria-hidden="true"></span><strong>Loading 3D model...</strong><p>Preparing interactive CAD geometry.</p></div>
+              <button class="inline-viewer-reset" type="button" disabled>Reset View</button>
+              <p class="viewer-status" role="status">Preparing model...</p>
+            </div>
+            <figcaption>Interactive CAD model for the suction impeller prototype.</figcaption>
           </figure>
         </div>
       </section>
@@ -62,6 +63,7 @@
     <footer>
       <p>© 2026 Sahil Rajput</p>
     </footer>
-    <script src="lightbox.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js"></script>
+    <script type="module" src="step-viewer.js"></script>
   </body>
 </html>

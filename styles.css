@@ -601,6 +601,49 @@ h3 {
   background: #eef0ec;
 }
 
+.inline-model-viewer {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(36, 107, 82, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(36, 107, 82, 0.05) 1px, transparent 1px),
+    #f1f4ef;
+  background-size: 36px 36px;
+}
+
+.inline-model-viewer canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.inline-model-viewer canvas:active {
+  cursor: grabbing;
+}
+
+.inline-viewer-reset {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--green-dark);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.inline-viewer-reset:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+
 .featured-render figcaption {
   padding: 14px 18px 18px;
   color: var(--muted);
