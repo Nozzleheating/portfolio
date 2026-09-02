@@ -608,6 +608,21 @@ h3 {
   font-weight: 700;
 }
 
+.featured-render .viewer-project-action {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(36, 107, 82, 0.08);
+  color: var(--green-dark);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
 .iteration-heading {
   display: flex;
   align-items: end;
@@ -726,54 +741,6 @@ h3 {
   padding: 16px;
 }
 
-.file-dropzone {
-  display: grid;
-  min-height: 184px;
-  place-items: center;
-  align-content: center;
-  gap: 8px;
-  padding: 18px;
-  border: 1px dashed rgba(36, 107, 82, 0.56);
-  border-radius: 8px;
-  background: rgba(36, 107, 82, 0.07);
-  color: var(--green-dark);
-  cursor: pointer;
-  text-align: center;
-  transition: background 160ms ease, border-color 160ms ease;
-}
-
-.file-dropzone:hover,
-.file-dropzone.is-dragging {
-  border-color: var(--green-dark);
-  background: rgba(36, 107, 82, 0.14);
-}
-
-.file-dropzone span:last-child {
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
-.file-dropzone-mark {
-  display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  border-radius: 8px;
-  color: #fff;
-  background: var(--green-dark);
-  font-size: 1.5rem;
-  font-weight: 500;
-  line-height: 1;
-}
-
-#step-file {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
 .viewer-stats {
   display: grid;
   gap: 1px;
@@ -809,6 +776,10 @@ h3 {
   width: 100%;
   cursor: pointer;
   font: inherit;
+}
+
+.viewer-project-link {
+  width: 100%;
 }
 
 .viewer-reset:disabled {

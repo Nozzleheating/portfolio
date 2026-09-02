@@ -37,23 +37,16 @@
             <h1 class="detail-title">3D STEP Viewer</h1>
           </div>
           <p>
-            Open a STEP file and inspect its geometry directly in the browser. Your CAD file stays on your device.
+            Rotate, zoom, and inspect the original CAD model right in the browser.
           </p>
         </div>
 
         <div class="step-viewer-layout">
           <aside class="viewer-controls" aria-label="STEP viewer controls">
-            <label class="file-dropzone" id="dropzone" for="step-file">
-              <span class="file-dropzone-mark" aria-hidden="true">+</span>
-              <strong>Choose a STEP file</strong>
-              <span>.step or .stp</span>
-            </label>
-            <input id="step-file" type="file" accept=".step,.stp" />
-
             <dl class="viewer-stats" aria-live="polite">
               <div>
-                <dt>File</dt>
-                <dd id="file-name">No file selected</dd>
+                <dt>Project</dt>
+                <dd id="project-name">Loading model</dd>
               </div>
               <div>
                 <dt>Solids</dt>
@@ -68,16 +61,17 @@
             <button class="button secondary viewer-reset" id="reset-view" type="button" disabled>
               Reset View
             </button>
+            <a class="button secondary viewer-project-link" id="project-back" href="index.html#projects">View Project Details</a>
             <p class="viewer-help">Drag to orbit. Scroll or pinch to zoom. Right-drag to pan.</p>
           </aside>
 
           <section class="viewer-stage" id="viewer-stage" aria-label="Interactive 3D STEP model viewer">
             <div class="viewer-empty" id="viewer-empty">
               <span class="viewer-cube" aria-hidden="true"></span>
-              <strong>Your model will appear here.</strong>
-              <p>Choose a `.step` or `.stp` CAD file to begin.</p>
+              <strong>The model is loading.</strong>
+              <p>Interactive CAD geometry will appear here.</p>
             </div>
-            <p class="viewer-status" id="viewer-status" role="status">Ready for a STEP file.</p>
+            <p class="viewer-status" id="viewer-status" role="status">Preparing model...</p>
           </section>
         </div>
 

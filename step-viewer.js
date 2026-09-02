@@ -1,15 +1,45 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
 
-const fileInput = document.querySelector("#step-file");
-const dropzone = document.querySelector("#dropzone");
 const stage = document.querySelector("#viewer-stage");
 const emptyState = document.querySelector("#viewer-empty");
 const status = document.querySelector("#viewer-status");
-const fileName = document.querySelector("#file-name");
+const projectName = document.querySelector("#project-name");
 const solidCount = document.querySelector("#solid-count");
 const triangleCount = document.querySelector("#triangle-count");
 const resetButton = document.querySelector("#reset-view");
+const projectBack = document.querySelector("#project-back");
+
+const modelLibrary = {
+  "light-cover-mounting-bracket": {
+    name: "Light Cover Mounting Bracket",
+    file: "assets/models/light-cover-mounting-bracket.step",
+    project: "light-cover-mounting-bracket.html",
+  },
+  "fridge-dairy-compartment": {
+    name: "Fridge Dairy Compartment",
+    file: "assets/models/fridge-dairy-compartment.step",
+    project: "fridge-dairy-compartment.html",
+  },
+  "countertop-scraper": {
+    name: "Countertop Scraper",
+    file: "assets/models/countertop-scraper.step",
+    project: "countertop-scraper.html",
+  },
+  "shopvac-suction-cup": {
+    name: "Shopvac Suction Cup",
+    file: "assets/models/shopvac-suction-cup.step",
+    project: "shopvac-suction-cup.html",
+  },
+  impeller: {
+    name: "Impeller",
+    file: "assets/models/impeller.step",
+    project: "impeller.html",
+  },
+};
+
+const modelId = new URLSearchParams(window.location.search).get("model");
+const selectedModel = modelLibrary[modelId];
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf1f4ef);
@@ -82,13 +112,9 @@ async function loadParser() {
   return parser;
 }
 
-async function showStepFile(file) {
-  if (!file || !/\.(step|stp)$/i.test(file.name)) {
-    status.textContent = "Choose a .step or .stp CAD file.";
-    return;
-  }
-
-  fileName.textContent = file.name;
+async function showStepModel(model) {
+  projectName.textContent = model.name;
+  projectBack.href = model.project;
   solidCount.textContent = "Loading";
   triangleCount.textContent = "Loading";
   status.textContent = "Reading CAD geometry...";
@@ -97,7 +123,9 @@ async function showStepFile(file) {
 
   try {
     const occt = await loadParser();
-    const bytes = new Uint8Array(await file.arrayBuffer());
+    const response = await fetch(model.file);
+    if (!response.ok) throw new Error("The CAD model could not be loaded.");
+    const bytes = new Uint8Array(await response.arrayBuffer());
     const result = occt.ReadStepFile(bytes, { linearUnit: "millimeter" });
 
     if (!result?.success || !result.meshes?.length) {
@@ -140,24 +168,17 @@ async function showStepFile(file) {
   }
 }
 
-fileInput.addEventListener("change", () => showStepFile(fileInput.files[0]));
 resetButton.addEventListener("click", frameModel);
-
-["dragenter", "dragover"].forEach((eventName) => {
-  dropzone.addEventListener(eventName, (event) => {
-    event.preventDefault();
-    dropzone.classList.add("is-dragging");
-  });
-});
-
-["dragleave", "drop"].forEach((eventName) => {
-  dropzone.addEventListener(eventName, (event) => {
-    event.preventDefault();
-    dropzone.classList.remove("is-dragging");
-  });
-});
-
-dropzone.addEventListener("drop", (event) => showStepFile(event.dataTransfer.files[0]));
 window.addEventListener("resize", resizeViewer);
 resizeViewer();
 render();
+
+if (selectedModel) {
+  showStepModel(selectedModel);
+} else {
+  projectName.textContent = "No model selected";
+  status.textContent = "Open a 3D model from one of the project pages.";
+  emptyState.querySelector("strong").textContent = "Choose a project model.";
+  emptyState.querySelector("p").textContent = "Interactive STEP models are available from selected project pages.";
+  projectBack.hidden = true;
+}
