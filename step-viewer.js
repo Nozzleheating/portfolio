@@ -83,7 +83,7 @@ function initializeViewer(stage) {
   }
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf1f4ef);
+  scene.background = new THREE.Color(0xf6f7f2);
 
   const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 50000);
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -96,18 +96,27 @@ function initializeViewer(stage) {
   controls.dampingFactor = 0.08;
   controls.screenSpacePanning = true;
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x446276, 2.1));
-  const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x22372f, 1.75));
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
   keyLight.position.set(180, 260, 180);
   scene.add(keyLight);
-  const fillLight = new THREE.DirectionalLight(0xd9902f, 0.7);
+  const fillLight = new THREE.DirectionalLight(0xd9902f, 0.28);
   fillLight.position.set(-180, -80, 120);
   scene.add(fillLight);
 
   const modelGroup = new THREE.Group();
   scene.add(modelGroup);
-  const material = new THREE.MeshStandardMaterial({ color: 0x246b52, metalness: 0.32, roughness: 0.36 });
-  const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x164636, transparent: true, opacity: 0.34 });
+  const material = new THREE.MeshStandardMaterial({ color: 0x1f5947, metalness: 0.14, roughness: 0.52 });
+  const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x112d24, transparent: true, opacity: 0.42 });
+  const partsPanel = document.createElement("aside");
+  const partsList = document.createElement("div");
+
+  partsPanel.className = "viewer-parts-panel";
+  partsPanel.hidden = true;
+  partsPanel.innerHTML = "<p class=\"viewer-parts-title\">Parts</p>";
+  partsList.className = "viewer-parts-list";
+  partsPanel.append(partsList);
+  stage.append(partsPanel);
 
   function resizeViewer() {
     const { width, height } = stage.getBoundingClientRect();
@@ -160,7 +169,7 @@ function initializeViewer(stage) {
       const result = parser.ReadStepFile(modelBytes, null);
       if (!result?.success || !result.meshes?.length) throw new Error("No solid geometry was found in this model.");
 
-      result.meshes.forEach((mesh) => {
+      result.meshes.forEach((mesh, index) => {
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute("position", new THREE.Float32BufferAttribute(mesh.attributes.position.array, 3));
         if (mesh.attributes.normal) {
@@ -173,16 +182,34 @@ function initializeViewer(stage) {
         const solid = new THREE.Mesh(geometry, material);
         solid.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 22), edgeMaterial));
         modelGroup.add(solid);
+
+        const toggle = document.createElement("label");
+        const input = document.createElement("input");
+        const name = document.createElement("span");
+        const partName = typeof mesh.name === "string" && mesh.name.trim() ? mesh.name.trim() : `Part ${index + 1}`;
+
+        toggle.className = "viewer-part-toggle";
+        input.type = "checkbox";
+        input.checked = true;
+        input.setAttribute("aria-label", `Show ${partName}`);
+        input.addEventListener("change", () => {
+          solid.visible = input.checked;
+        });
+        name.textContent = partName;
+        toggle.append(input, name);
+        partsList.append(toggle);
       });
 
       resizeViewer();
       frameModel();
       emptyState.hidden = true;
+      partsPanel.hidden = false;
       resetButton.disabled = false;
       status.textContent = "Drag to rotate. Scroll to zoom.";
     } catch (error) {
       console.error(error);
       emptyState.hidden = false;
+      partsPanel.hidden = true;
       emptyState.querySelector("strong").textContent = "Model could not load.";
       emptyState.querySelector("p").textContent = "Try refreshing this page.";
       status.textContent = error.message || "The interactive model could not be loaded.";

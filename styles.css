@@ -623,6 +623,11 @@ h3 {
   cursor: grabbing;
 }
 
+.viewer-empty[hidden],
+.viewer-parts-panel[hidden] {
+  display: none;
+}
+
 .inline-viewer-reset {
   position: absolute;
   top: 14px;
@@ -642,6 +647,52 @@ h3 {
 .inline-viewer-reset:disabled {
   cursor: wait;
   opacity: 0.5;
+}
+
+.viewer-parts-panel {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 3;
+  width: min(190px, calc(100% - 132px));
+  max-height: calc(100% - 28px);
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid rgba(44, 77, 65, 0.2);
+  border-radius: 8px;
+  background: rgba(250, 251, 247, 0.94);
+  box-shadow: 0 10px 24px rgba(23, 33, 29, 0.1);
+}
+
+.viewer-parts-title {
+  margin: 0 0 8px;
+  color: var(--green-dark);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.viewer-parts-list {
+  display: grid;
+  gap: 5px;
+}
+
+.viewer-part-toggle {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.viewer-part-toggle input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--green);
 }
 
 .featured-render figcaption {
@@ -1219,5 +1270,11 @@ footer {
 
   .viewer-stage {
     min-height: 360px;
+  }
+
+  .viewer-parts-panel {
+    top: 60px;
+    width: min(180px, calc(100% - 28px));
+    max-height: calc(100% - 74px);
   }
 }

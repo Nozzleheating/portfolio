@@ -16,9 +16,6 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.wasm" as="fetch" crossorigin="anonymous" />
   </head>
   <body>
     <header class="site-header">
@@ -58,12 +55,8 @@
           </div>
 
           <figure class="featured-render">
-            <div class="inline-model-viewer" data-step-model="light-cover-mounting-bracket" data-step-fallback="assets/model-sources/light-cover-mounting-bracket.js" aria-label="Interactive 3D model of the light cover mounting bracket">
-              <div class="viewer-empty"><span class="viewer-cube" aria-hidden="true"></span><strong>Loading 3D model...</strong><p>Preparing interactive CAD geometry.</p></div>
-              <button class="inline-viewer-reset" type="button" disabled>Reset View</button>
-              <p class="viewer-status" role="status">Preparing model...</p>
-            </div>
-            <figcaption>Interactive CAD model of the final V10 bracket.</figcaption>
+            <img src="assets/lightholder-v10.png" alt="Final CAD render of the light cover mounting bracket" />
+            <figcaption>Final V10 bracket design.</figcaption>
           </figure>
         </div>
 
@@ -113,10 +106,5 @@
       <p>© 2026 Sahil Rajput</p>
     </footer>
     <script src="lightbox.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js"></script>
-    <script src="step-viewer-fallback.js"></script>
-    <script src="step-viewer.js"></script>
   </body>
 </html>
