@@ -612,6 +612,10 @@ h3 {
   box-shadow: 0 18px 34px rgba(23, 33, 29, 0.1);
 }
 
+.viewer-canvas-shell {
+  position: relative;
+}
+
 .featured-render img {
   aspect-ratio: 16 / 10;
   background: #eef0ec;
@@ -644,6 +648,25 @@ h3 {
   display: none;
 }
 
+.viewer-progress {
+  width: min(240px, 74%);
+  height: 8px;
+  margin: 16px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(36, 107, 82, 0.2);
+  border-radius: 999px;
+  background: rgba(36, 107, 82, 0.1);
+}
+
+.viewer-progress span {
+  display: block;
+  width: var(--viewer-progress, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--green);
+  transition: width 180ms ease;
+}
+
 .inline-viewer-reset {
   position: absolute;
   top: 14px;
@@ -668,11 +691,14 @@ h3 {
 .viewer-parts-panel {
   position: absolute;
   top: 14px;
+  bottom: 14px;
   left: 14px;
   z-index: 3;
   width: min(190px, calc(100% - 132px));
-  max-height: calc(100% - 28px);
-  overflow: auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  overflow: hidden;
   padding: 10px;
   border: 1px solid rgba(44, 77, 65, 0.2);
   border-radius: 8px;
@@ -681,7 +707,7 @@ h3 {
 }
 
 .viewer-parts-title {
-  margin: 0 0 8px;
+  margin: 0;
   color: var(--green-dark);
   font-size: 0.76rem;
   font-weight: 800;
@@ -691,6 +717,10 @@ h3 {
 .viewer-parts-list {
   display: grid;
   gap: 5px;
+  min-height: 0;
+  padding-right: 3px;
+  overflow-y: auto;
+  align-content: start;
 }
 
 .viewer-part-toggle {
@@ -716,12 +746,20 @@ h3 {
   grid-template-columns: 16px minmax(0, 1fr);
   gap: 8px;
   align-items: center;
-  margin-top: 12px;
   padding-top: 10px;
   border-top: 1px solid rgba(44, 77, 65, 0.16);
   color: var(--green-dark);
   font-size: 0.78rem;
   font-weight: 800;
+}
+
+.viewer-section-title {
+  grid-column: 1 / -1;
+  margin: 0 0 2px;
+  color: var(--green-dark);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .viewer-section-controls input[type="checkbox"] {
@@ -1256,8 +1294,11 @@ footer {
   .featured-render.has-inline-viewer .viewer-parts-panel {
     position: static;
     width: auto;
-    max-height: none;
     margin-top: 12px;
+  }
+
+  .featured-render.has-inline-viewer .viewer-parts-list {
+    max-height: 250px;
   }
 }
 

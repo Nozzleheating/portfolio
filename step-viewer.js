@@ -55,15 +55,42 @@ function loadEmbeddedModel(modelKey, sourceFile) {
   });
 }
 
-async function loadModelBytes(modelFile, modelKey, embeddedSource) {
+async function loadModelBytes(modelFile, modelKey, embeddedSource, updateProgress) {
   const sources = [modelFile, `https://raw.githubusercontent.com/Nozzleheating/portfolio/main/${modelFile}`];
   let fetchError;
 
-  for (const source of sources) {
+  for (const [sourceIndex, source] of sources.entries()) {
     try {
+      updateProgress(sourceIndex === 0 ? 28 : 34, "Downloading model...");
       const response = await fetch(source);
       if (!response.ok) throw new Error("The CAD model could not be loaded.");
-      return new Uint8Array(await response.arrayBuffer());
+
+      const total = Number(response.headers.get("content-length")) || 0;
+      if (!response.body || !total) {
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        updateProgress(66, "Model downloaded.");
+        return bytes;
+      }
+
+      const reader = response.body.getReader();
+      const chunks = [];
+      let received = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        updateProgress(28 + Math.round((received / total) * 38), "Downloading model...");
+      }
+
+      const bytes = new Uint8Array(received);
+      let offset = 0;
+      for (const chunk of chunks) {
+        bytes.set(chunk, offset);
+        offset += chunk.length;
+      }
+      updateProgress(66, "Model downloaded.");
+      return bytes;
     } catch (error) {
       fetchError = error;
     }
@@ -73,6 +100,7 @@ async function loadModelBytes(modelFile, modelKey, embeddedSource) {
   await loadEmbeddedModel(modelKey, embeddedSource);
   const embeddedModel = window.stepModelSources?.[modelKey];
   if (!embeddedModel) throw new Error("The local CAD model could not be read.");
+  updateProgress(66, "Model downloaded.");
   return decodeEmbeddedModel(embeddedModel);
 }
 
@@ -109,6 +137,23 @@ function initializeViewer(stage) {
   const emptyState = stage.querySelector(".viewer-empty");
   const status = stage.querySelector(".viewer-status");
   const resetButton = stage.querySelector(".inline-viewer-reset");
+  const progress = document.createElement("div");
+  const progressBar = document.createElement("span");
+
+  progress.className = "viewer-progress";
+  progress.setAttribute("role", "progressbar");
+  progress.setAttribute("aria-label", "3D model loading progress");
+  progress.setAttribute("aria-valuemin", "0");
+  progress.setAttribute("aria-valuemax", "100");
+  progress.append(progressBar);
+  emptyState.append(progress);
+
+  function updateProgress(value, message) {
+    const clampedValue = Math.max(0, Math.min(100, Math.round(value)));
+    progress.style.setProperty("--viewer-progress", `${clampedValue}%`);
+    progress.setAttribute("aria-valuenow", String(clampedValue));
+    if (message) status.textContent = message;
+  }
 
   if (!modelFile) {
     status.textContent = "This project does not have an interactive model yet.";
@@ -145,6 +190,7 @@ function initializeViewer(stage) {
   const partsPanel = document.createElement("aside");
   const partsList = document.createElement("div");
   const sectionControls = document.createElement("div");
+  const sectionTitle = document.createElement("p");
   const sectionToggle = document.createElement("input");
   const sectionLabel = document.createElement("label");
   const sectionSlider = document.createElement("input");
@@ -157,10 +203,12 @@ function initializeViewer(stage) {
   partsPanel.innerHTML = "<p class=\"viewer-parts-title\">Parts</p>";
   partsList.className = "viewer-parts-list";
   sectionControls.className = "viewer-section-controls";
+  sectionTitle.className = "viewer-section-title";
+  sectionTitle.textContent = "Section View";
   sectionToggle.type = "checkbox";
   sectionToggle.id = `section-toggle-${stage.dataset.stepModel}`;
   sectionLabel.htmlFor = sectionToggle.id;
-  sectionLabel.textContent = "Section View";
+  sectionLabel.textContent = "Enable section view";
   sectionSlider.type = "range";
   sectionSlider.min = "-1";
   sectionSlider.max = "1";
@@ -168,11 +216,14 @@ function initializeViewer(stage) {
   sectionSlider.step = "0.01";
   sectionSlider.disabled = true;
   sectionSlider.setAttribute("aria-label", "Section view depth");
-  sectionControls.append(sectionToggle, sectionLabel, sectionSlider);
+  sectionControls.append(sectionTitle, sectionToggle, sectionLabel, sectionSlider);
   partsPanel.append(partsList, sectionControls);
   const viewerFigure = stage.closest(".featured-render");
+  const viewerShell = document.createElement("div");
+  viewerShell.className = "viewer-canvas-shell";
   viewerFigure?.classList.add("has-inline-viewer");
-  stage.after(partsPanel);
+  stage.before(viewerShell);
+  viewerShell.append(stage, partsPanel);
 
   function resizeViewer() {
     const { width, height } = stage.getBoundingClientRect();
@@ -216,15 +267,16 @@ function initializeViewer(stage) {
 
   async function loadModel() {
     try {
-      status.textContent = "Loading CAD engine...";
+      updateProgress(8, "Starting CAD engine...");
       const parser = await getParser();
-      status.textContent = "Reading model geometry...";
-      const modelBytes = await loadModelBytes(modelFile, stage.dataset.stepModel, embeddedSource);
+      updateProgress(24, "CAD engine ready.");
+      const modelBytes = await loadModelBytes(modelFile, stage.dataset.stepModel, embeddedSource, updateProgress);
 
+      updateProgress(70, "Reading model geometry...");
       const result = parser.ReadStepFile(modelBytes, null);
       if (!result?.success || !result.meshes?.length) throw new Error("No solid geometry was found in this model.");
 
-      result.meshes.forEach((mesh, index) => {
+      for (const [index, mesh] of result.meshes.entries()) {
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute("position", new THREE.Float32BufferAttribute(mesh.attributes.position.array, 3));
         if (mesh.attributes.normal) {
@@ -253,8 +305,11 @@ function initializeViewer(stage) {
         name.textContent = partName;
         toggle.append(input, name);
         partsList.append(toggle);
-      });
+        updateProgress(72 + ((index + 1) / result.meshes.length) * 24, "Building interactive parts...");
+        if (index % 12 === 11) await new Promise((resolve) => window.requestAnimationFrame(resolve));
+      }
 
+      updateProgress(98, "Framing model...");
       resizeViewer();
       frameModel();
       emptyState.hidden = true;
