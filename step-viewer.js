@@ -1,7 +1,14 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+(() => {
+  const THREE = window.THREE;
 
-window.stepViewerStarted = true;
+  if (!THREE || !THREE.OrbitControls) {
+    document.querySelectorAll(".inline-model-viewer .viewer-status").forEach((status) => {
+      status.textContent = "The 3D tools could not load. Refresh this page and try again.";
+    });
+    return;
+  }
+
+  window.stepViewerStarted = true;
 
 const modelLibrary = {
   "light-cover-mounting-bracket": "assets/models/light-cover-mounting-bracket.step",
@@ -57,10 +64,10 @@ function initializeViewer(stage) {
   const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 50000);
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.outputEncoding = THREE.sRGBEncoding;
   stage.prepend(renderer.domElement);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   controls.screenSpacePanning = true;
@@ -146,10 +153,15 @@ function initializeViewer(stage) {
   }
 
   resetButton.addEventListener("click", frameModel);
-  new ResizeObserver(resizeViewer).observe(stage);
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(resizeViewer).observe(stage);
+  } else {
+    window.addEventListener("resize", resizeViewer);
+  }
   resizeViewer();
   render();
   loadModel();
 }
 
 document.querySelectorAll(".inline-model-viewer[data-step-model]").forEach(initializeViewer);
+})();
