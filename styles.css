@@ -57,12 +57,14 @@ a {
   width: 42px;
   height: 42px;
   place-items: center;
-  border-radius: 8px;
-  color: #fff;
-  background: var(--green-dark);
-  font-weight: 800;
   text-decoration: none;
   touch-action: manipulation;
+}
+
+.brand-mark {
+  display: block;
+  width: 42px;
+  height: 42px;
 }
 
 .nav-links {
@@ -1186,16 +1188,24 @@ h3 {
   color: rgba(255, 255, 255, 0.78);
 }
 
-.contact-section .button.primary {
-  color: var(--green-dark);
-  background: #fff;
-  box-shadow: none;
+.contact-details {
+  display: grid;
+  align-content: center;
+  gap: 10px;
 }
 
-.contact-section .button.secondary {
+.contact-details a {
+  width: fit-content;
   color: #fff;
-  border-color: rgba(255, 255, 255, 0.34);
-  background: rgba(255, 255, 255, 0.12);
+  font-size: clamp(1.08rem, 2vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.35;
+  text-decoration-color: rgba(255, 255, 255, 0.42);
+  text-underline-offset: 4px;
+}
+
+.contact-details a:hover {
+  color: #fff1d8;
 }
 
 footer {
