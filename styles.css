@@ -384,6 +384,42 @@ h3 {
   opacity: 0.82;
 }
 
+.project-image-link.project-image-swap {
+  position: relative;
+}
+
+.project-image-link.project-image-swap .project-real-image {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.01);
+  opacity: 0;
+  object-fit: cover;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.project-image-link.project-image-swap .project-real-ground-intake {
+  object-position: center 44%;
+}
+
+.project-image-link.project-image-swap .project-real-limelight {
+  object-position: center 50%;
+}
+
+.project-image-link.project-image-swap .project-real-shopvac {
+  object-position: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-image-link.project-image-swap:hover .project-cad-image {
+    opacity: 0;
+  }
+
+  .project-image-link.project-image-swap:hover .project-real-image {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
 .project-image-link .cover-lightholder {
   transform: scale(1.2);
 }
@@ -1060,6 +1096,11 @@ h3 {
 .iteration-grid img {
   aspect-ratio: 16 / 10;
   background: #eef0ec;
+}
+
+.iteration-grid img.project-photo,
+.reference-grid img.project-photo {
+  object-fit: cover;
 }
 
 .iteration-grid span {
