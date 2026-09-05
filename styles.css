@@ -157,8 +157,7 @@ h3 {
   line-height: 1.65;
 }
 
-.hero-actions,
-.contact-actions {
+.hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -1233,24 +1232,108 @@ h3 {
   color: rgba(255, 255, 255, 0.78);
 }
 
-.contact-details {
+.contact-form {
   display: grid;
-  align-content: center;
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 16px;
 }
 
-.contact-details a {
-  width: fit-content;
-  color: #fff;
-  font-size: clamp(1.08rem, 2vw, 1.35rem);
+.contact-form label {
+  display: grid;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.82rem;
   font-weight: 800;
-  line-height: 1.35;
-  text-decoration-color: rgba(255, 255, 255, 0.42);
-  text-underline-offset: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.contact-details a:hover {
-  color: #fff1d8;
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  border-radius: 4px;
+  padding: 12px 14px;
+  color: var(--ink);
+  background: #fff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.contact-form textarea {
+  min-height: 124px;
+  resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: 3px solid rgba(236, 188, 112, 0.74);
+  outline-offset: 2px;
+}
+
+.contact-message,
+.contact-form-footer {
+  grid-column: 1 / -1;
+}
+
+.contact-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.contact-form-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.contact-submit {
+  flex: 0 0 auto;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  padding: 12px 17px;
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.contact-submit:hover:not(:disabled) {
+  color: var(--green-dark);
+  background: #fff;
+}
+
+.contact-submit:focus-visible {
+  outline: 3px solid #f3c378;
+  outline-offset: 3px;
+}
+
+.contact-submit:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.contact-form-status {
+  min-height: 1.5em;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700;
+  line-height: 1.45 !important;
 }
 
 footer {
@@ -1386,8 +1469,7 @@ footer {
     line-height: 1.04;
   }
 
-  .hero-actions,
-  .contact-actions {
+  .hero-actions {
     flex-direction: column;
   }
 
@@ -1439,6 +1521,15 @@ footer {
   .contact-section {
     margin-left: 16px;
     margin-right: 16px;
+  }
+
+  .contact-form {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-form-footer {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .step-viewer-section {

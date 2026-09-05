@@ -498,13 +498,30 @@
           <h2>Let’s build something useful.</h2>
           <p>
             I am open to engineering opportunities, project conversations, and chances to learn from hands-on work.
-            Email or call me using the details below.
+            Send a message and I will get back to you.
           </p>
         </div>
-        <div class="contact-details">
-          <a href="mailto:sahilshethrajput@gmail.com">sahilshethrajput@gmail.com</a>
-          <a href="tel:+16503145181">+1 (650) 314-5181</a>
-        </div>
+        <form class="contact-form" action="/api/contact" method="post" data-contact-form>
+          <label>
+            <span>Name</span>
+            <input name="name" type="text" autocomplete="name" maxlength="120" required />
+          </label>
+          <label>
+            <span>Email</span>
+            <input name="email" type="email" autocomplete="email" maxlength="254" required />
+          </label>
+          <label class="contact-message">
+            <span>Message</span>
+            <textarea name="message" rows="5" maxlength="4000" required></textarea>
+          </label>
+          <div class="contact-trap" aria-hidden="true">
+            <label>Website <input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <div class="contact-form-footer">
+            <button class="contact-submit" type="submit">Send Message</button>
+            <p class="contact-form-status" role="status" aria-live="polite"></p>
+          </div>
+        </form>
       </section>
     </main>
 
@@ -513,5 +530,6 @@
     </footer>
     <script src="lightbox.js"></script>
     <script src="project-navigation.js"></script>
+    <script src="contact-form.js"></script>
   </body>
 </html>
