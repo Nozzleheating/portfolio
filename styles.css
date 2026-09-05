@@ -409,6 +409,10 @@ h3 {
   object-position: center;
 }
 
+.project-image-link.project-image-swap .project-real-turret-platform {
+  object-position: center;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .project-image-link.project-image-swap:hover .project-cad-image {
     opacity: 0;
